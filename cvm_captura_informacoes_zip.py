@@ -63,32 +63,38 @@ def get_list_files_cvm_site(url):
 
     return links
 
+
+def download_files(links):
+    for link in links:
+        print(link)
+        if not link.endswith('.zip'):
+            continue
+        
+        file_name = link.split('/')[-1]
+        file_path = os.path.join('downloads', file_name)
+        
+        if os.path.exists(file_path):
+            print('Arquivo já baixado, indo para o próximo', file_path)
+            continue
+
+        print('Fazendo download do arquivo', link)
+        download_file(link, file_path)
+        print('Extraindo arquivo', file_path)
+        extract_file(file_path)
+        #rint('Removendo arquivo', file_path)
+        #os.remove(file_path)
+
+
 # main
 urls = [
     'http://dados.cvm.gov.br/dados/FI/DOC/LAMINA/DADOS/',
-    'http://dados.cvm.gov.br/dados/FI/DOC/BALANCETE/DADOS/'
+    'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/',
+    'http://dados.cvm.gov.br/dados/FI/DOC/BALANCETE/DADOS/',    
 ]
 
 create_download_folder()
 
-links = []
 for url in urls:
-    links.append(get_list_files_cvm_site(url))
-
-for link in links[0]:
-    if not link.endswith('.zip'):
-        continue
-    
-    file_name = link.split('/')[-1]
-    file_path = os.path.join('downloads', file_name)
-    
-    if os.path.exists(file_path):
-        print('Arquivo já baixado, indo para o próximo', file_path)
-        continue
-
-    print('Fazendo download do arquivo', link)
-    download_file(link, file_path)
-    print('Extraindo arquivo', file_path)
-    extract_file(file_path)
-    #rint('Removendo arquivo', file_path)
-    #os.remove(file_path)
+    links = get_list_files_cvm_site(url)
+    download_files(links)
+   

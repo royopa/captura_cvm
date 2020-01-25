@@ -49,9 +49,25 @@ def get_list_files_cvm_site(url):
 
     return links
 
+
+def download_files(links):
+    for link in links:
+        if not link.endswith('.csv'):
+            continue
+        
+        file_name = link.split('/')[-1]
+        file_path = os.path.join('downloads', file_name)
+
+        if os.path.exists(file_path):
+            print('Arquivo já baixado, indo para o próximo', file_path)
+            continue
+
+        print('Fazendo download do arquivo', link)
+        download_file(link, file_path)
+
+
 # main
 urls = [
-    'http://dados.cvm.gov.br/dados/FI/CAD/DADOS/',
     'http://dados.cvm.gov.br/dados/FI/DOC/PERFIL_MENSAL/DADOS/',
     'http://dados.cvm.gov.br/dados/FI/DOC/EXTRATO/DADOS/',
     'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/',
@@ -63,24 +79,12 @@ urls = [
     'http://dados.cvm.gov.br/dados/FI/DOC/EVENTUAL/DADOS/',
     # informações cadastrais de fundos estruturados
     'http://dados.cvm.gov.br/dados/FIE/CAD/DADOS/',
+    # dados cadastrais diários de fundos 555
+    'http://dados.cvm.gov.br/dados/FI/CAD/DADOS/',
 ]
 
 create_download_folder()
 
-links = []
 for url in urls:
-    links.append(get_list_files_cvm_site(url))
-
-for link in links[0]:
-    if not link.endswith('.csv'):
-        continue
-    
-    file_name = link.split('/')[-1]
-    file_path = os.path.join('downloads', file_name)
-
-    if os.path.exists(file_path):
-        print('Arquivo já baixado, indo para o próximo', file_path)
-        continue
-
-    print('Fazendo download do arquivo', link)
-    download_file(link, file_path)
+    links = get_list_files_cvm_site(url)
+    download_files(links)
